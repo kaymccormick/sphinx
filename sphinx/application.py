@@ -131,7 +131,7 @@ class Sphinx:
     def __init__(self, srcdir, confdir, outdir, doctreedir, buildername,
                  confoverrides=None, status=sys.stdout, warning=sys.stderr,
                  freshenv=False, warningiserror=False, tags=None, verbosity=0,
-                 parallel=0, keep_going=False):
+                 parallel=0, keep_going=False, watch=False):
         # type: (str, str, str, str, str, Dict, IO, IO, bool, bool, List[str], int, int, bool) -> None  # NOQA
         self.phase = BuildPhase.INITIALIZATION
         self.verbosity = verbosity
@@ -141,6 +141,7 @@ class Sphinx:
         self.project = None                     # type: Project
         self.registry = SphinxComponentRegistry()
         self.html_themes = {}                   # type: Dict[str, str]
+        self.watch = watch
 
         # validate provided directories
         self.srcdir = abspath(srcdir)
@@ -333,6 +334,12 @@ class Sphinx:
             elif filenames:
                 self.builder.compile_specific_catalogs(filenames)
                 self.builder.build_specific(filenames)
+            elif self.watch:
+                from time import sleep
+                while True:
+                    self.builder.compile_update_catalogs()
+                    self.builder.build_update()
+                    sleep(5)
             else:
                 self.builder.compile_update_catalogs()
                 self.builder.build_update()

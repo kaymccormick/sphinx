@@ -148,6 +148,7 @@ files can be built by specifying individual filenames.
     group.add_argument('-j', metavar='N', default=1, type=jobs_argument, dest='jobs',
                        help=__('build in parallel with N processes where '
                                'possible (special value "auto" will set N to cpu-count)'))
+    group.add_argument('--watch', dest='watch', action='store_true')
     group = parser.add_argument_group('build configuration options')
     group.add_argument('-c', metavar='PATH', dest='confdir',
                        help=__('path where configuration file (conf.py) is '
@@ -280,7 +281,7 @@ def build_main(argv=sys.argv[1:]):
             app = Sphinx(args.sourcedir, args.confdir, args.outputdir,
                          args.doctreedir, args.builder, confoverrides, status,
                          warning, args.freshenv, args.warningiserror,
-                         args.tags, args.verbosity, args.jobs, args.keep_going)
+                         args.tags, args.verbosity, args.jobs, args.keep_going, args.watch)
             app.build(args.force_all, filenames)
             return app.statuscode
     except (Exception, KeyboardInterrupt) as exc:
